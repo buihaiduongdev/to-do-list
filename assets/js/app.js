@@ -1,33 +1,61 @@
+let myNotes = JSON.parse(localStorage.getItem('myNotesSave'))
+    || [{ content: 'Your job', isDone: false }];
 
-let index = 0;
 const noteBtn = document.getElementById('note-btn');
 const noteInput = document.getElementById('input-to-do');
-const takeNote = function () {
-    const noteText = noteInput.value;
+const toDoList = document.getElementById('to-do-list');
 
-    if (!isInvalid()) return;
-    const toDoList = document.getElementById('to-do-list');
-    const liChildOf_toDoList = document.createElement('li');
+function createNoteItem(element, index) {
+    const noteItem = document.createElement('li');
 
-    const labelChildOf_li = document.createElement('label');
-    labelChildOf_li.setAttribute('for', `task-${index}`);
-    labelChildOf_li.innerText = noteText;
+    const noteContent = document.createElement('label');
+    noteContent.setAttribute('for', `task-${index}`);
+    noteContent.innerText = element.content;
 
-    const inputChildOf_li = document.createElement('input');
-    inputChildOf_li.setAttribute('type', `checkbox`);
-    inputChildOf_li.setAttribute('id', `task-${index++}`);
+    const checkBox = document.createElement('input');
+    checkBox.setAttribute('type', `checkbox`);
+    checkBox.setAttribute('id', `task-${index}`);
 
-    liChildOf_toDoList.appendChild(labelChildOf_li);
-    liChildOf_toDoList.appendChild(inputChildOf_li);
+    const removeNote = () => {
+        myNotes.splice(index, 1);
+        //update to localStorage
+        localStorage.setItem('myNotesSave', JSON.stringify(myNotes));
+        noteItem.remove();
+    }
 
-    liChildOf_toDoList.classList.add('to-do-item');
-    toDoList.appendChild(liChildOf_toDoList);
+    noteContent.addEventListener('click', removeNote)
+    checkBox.addEventListener('click', removeNote)
+    noteItem.appendChild(noteContent);
+    noteItem.appendChild(checkBox);
+    noteItem.classList.add('to-do-item');
+
+    return noteItem;
+}
+
+function loadNotes() {
+    toDoList.innerHTML = '';
+    myNotes.forEach((element, index) => {
+        toDoList.appendChild(createNoteItem(element, index));
+    });
+}
+
+function takeNote() {
+    const noteText = noteInput.value.trim();
+
+    if (!isInvalid(noteText)) return;
+
+    myNotes.push({ content: noteText, isDone: false });
+    const index = myNotes.length - 1;
+    toDoList.appendChild(createNoteItem(myNotes[index], index));
+
+    //update to localStorage
+    localStorage.setItem('myNotesSave', JSON.stringify(myNotes));
+
     noteInput.value = '';
     noteInput.focus();
 }
 
-const isInvalid = function () {
-    const noteText = noteInput.value.trim();
+const isInvalid = function (noteText) {
     if (!noteText) {
         noteInput.classList.add('invalid');
         noteInput.setAttribute('placeholder', 'Vui lòng nhập ghi chú');
@@ -38,10 +66,13 @@ const isInvalid = function () {
 
     return true;
 }
-noteBtn.addEventListener('click', takeNote);
+
+noteBtn.addEventListener('click', () => { takeNote() });
 
 noteInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         takeNote();
     }
 });
+
+loadNotes();
