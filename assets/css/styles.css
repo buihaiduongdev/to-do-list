@@ -14,14 +14,12 @@ body {
     min-height: 600px;
     background-color: rgba(255, 255, 255, 0.5);
 
-    /* background-color: #EFEFEF; */
     margin: 100px auto;
     border-radius: 8px;
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
 #to-do-heading {
-    position: relative;
     display: flex;
     flex-direction: column;
 }
@@ -39,6 +37,11 @@ body {
 
 }
 
+#to-do-heading .wrapper {
+    position: relative;
+    text-align: center;
+}
+
 #to-do-heading #input-to-do {
     font-family: -apple-system, sans-serif;
     font-size: 16px;
@@ -46,7 +49,7 @@ body {
     color: #fff;
     background-color: rgb(28, 28, 30);
     box-shadow: 0 0 .4vw rgba(0, 0, 0, 0.5), 0 0 0 .15vw transparent;
-    border-radius: 0.8vw;
+    border-radius: 8px;
     border: none;
     outline: none;
     transition: .4s;
@@ -56,16 +59,18 @@ body {
 }
 
 #to-do-heading #input-to-do.invalid {
-    box-shadow: 0 0 .4vw rgba(246, 0, 0, 0.8), 0 0 0 .15vw transparent !important;
+    box-shadow: 0 0 8px rgba(246, 0, 0, 0.8), 0 0 0 .15vw transparent !important;
 }
 
 #to-do-heading #input-to-do:focus {
-    box-shadow: 0 0 0 .15vw skyblue;
+    box-shadow: 0 0 8px skyblue, 0 0 0 .15vw transparent;
+
 }
 
 #to-do-heading button {
     position: absolute;
-    bottom: 3px;
+    top: 50%;
+    transform: translateY(-50%);
     right: 78px;
     height: 30px;
     width: 70px;
@@ -110,4 +115,10 @@ body {
     display: inline-block;
     transform: scale(1.5);
     margin-left: auto;
+}
+
+@media screen and (max-width: 540px) {
+    #to-do-heading button {
+        transform: translate(40%, -50%);
+    }
 }
